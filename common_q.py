@@ -20,6 +20,7 @@ def reverse_linked_list(head):
         # C to points to None
         cur.next = None
     return tail
+
     
 # reverse a linked list recursively: O(N)
 def reverse_linked_list_rec(head):
