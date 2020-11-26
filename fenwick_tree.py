@@ -1,4 +1,5 @@
 class Fenwick:
+    # O(n), constructs fenwick tree
     def __init__(self, arr):
         self.arr = arr
         self.tree = [0] * (len(self.arr) + 1)
@@ -7,7 +8,6 @@ class Fenwick:
             self.tree[i] = arr[i-1]
 
         # note index i in arr corresponds to i+1 in fenwick tree
-        # construct fenwick tree in O(n)
         for i in range(1,len(self.tree)):
             parent_idx = i + self.LSB(i)
 
