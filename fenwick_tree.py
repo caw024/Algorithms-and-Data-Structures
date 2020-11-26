@@ -10,7 +10,6 @@ class Fenwick:
         # note index i in arr corresponds to i+1 in fenwick tree
         for i in range(1,len(self.tree)):
             parent_idx = i + self.LSB(i)
-
             if parent_idx >= len(self.tree):
                 continue
             self.tree[parent_idx] += self.tree[i] 
