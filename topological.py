@@ -5,9 +5,8 @@ from collections import defaultdict
 # returns list of topological sort
 # in each dfs, traverse each vertex at most twice
 # runtime O(V+E), space O(V)
-d = defaultdict(int)
-
-def topological(numv):
+def topological(d):
+    numv = len(d)
     process = [0]*numv
     ans = []
 
@@ -44,3 +43,12 @@ def topological(numv):
 help determine a valid order to perform activities
 can check for cycles in directed acyclic graph
 '''
+if __name__ == "__main__":
+    d = defaultdict(list)
+    d[0] = [1,4]
+    d[1] = [2,3]
+    d[2] = [3]
+    d[3] = [4]
+    d[4] = []
+    print(topological(d))
+
