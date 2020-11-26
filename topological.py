@@ -1,39 +1,43 @@
 from collections import defaultdict
 
-# Detect if cycle in graph: Topological sort (if can't, there is cycle),
-# Then pick the undirected edges that preserves the ordering
-# returns list of topological sort
-# in each dfs, traverse each vertex at most twice
-# runtime O(V+E), space O(V)
+'''
+Returns topologically sort list of nodes (if there is a cycle, return []),
+Done with DFS
+Runtime O(V+E), space O(V)
+'''
 def topological(d):
+    # ASSUMES OUR NODES ARE LABELLED 0 TO N-1
     numv = len(d)
     process = [0]*numv
     ans = []
 
-    # STATES: 0 = Not processed, 1 = Under Processing, 2 = Processed
-    # scope lets us access process and ans easily
+    # STATES OF NODES:
+    # NOT_PROCESSED = 0
+    UNDER_PROCESSING = 1
+    PROCESSED = 2
+
+    # scope lets us access process and answer easily
     def dfs(node):
-        # if node has already been checked
-        if process[node] == 2:
+        if process[node] is PROCESSED:
             return True
         # this gives us a cycle
-        if process[node] == 1:
+        elif process[node] is UNDER_PROCESSING:
             return False
-        process[node] = 1
+        
+        # node has not been processed
+        process[node] = UNDER_PROCESSING
         
         for neighbor in d[node]:
             if dfs(neighbor) == False:
                 return False
 
-        # will add node in order of furthest reach
+        # add node in order of furthest reach
         ans.append(node)
-        process[node] = 2
+        process[node] = PROCESSED
         return True
 
-    # ASSUMES OUR NODES ARE LABELLED 0 TO N-1
-    for i in range(numv):
-        if dfs(i) == False:
-            return []
+    if any(not dfs(i) for i in range(numv)):
+        return []
 
     # gives the topologically sorted list of vertices
     return ans[::-1]
@@ -51,4 +55,10 @@ if __name__ == "__main__":
     d[3] = [4]
     d[4] = []
     print(topological(d))
+
+    e = defaultdict(list)
+    e[0] = [1,2]
+    e[1] = [0,2]
+    e[2] = []
+    print(topological(e))
 
