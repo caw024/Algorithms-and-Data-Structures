@@ -3,6 +3,7 @@ class DSU:
         # stores parent node of given vertex
         self.parents = list(range(N))
         # gives size of component w given node
+        # note: only accurate for root node
         self.size = [1] * N
 
     # runtime: amoritized O(1)
@@ -38,11 +39,18 @@ class DSU:
         self.size[yr] = self.size[xr]
         return True
 
+    # do x and y share the same root node
     def isConnected(self,x,y):
         return self.find(x) == self.find(y)
 
+    # get size of tree containing x
     def getSize(self, x):
         return self.size[self.find(x)]
+
+    # get number of distinct roots
+    def numRoots(self):
+        roots = set(self.find(x) for x in range(len(self.parents)))
+        return len(roots)
 
 # APPLICATIONS
 '''
