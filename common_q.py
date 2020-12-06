@@ -21,15 +21,28 @@ def reverse_linked_list(head):
         cur.next = None
     return tail
 
-    
-# reverse a linked list recursively: O(N)
-def reverse_linked_list_rec(head):
-    if head == None or head.next == None:
-        return head
-    new_head = reverse_linked_list_rec(head.next)
-    head.next = None
-    return (new_head, new_tail.next)
 
 # invert a btree
-def invert_btree(node):
-    pass
+def invert_btree(root):
+    if root is None:
+        return
+    root.left, root.right = invert_btree(root.right), invert_btree(root.left)
+    return root
+
+from collections import deque
+
+# get level order traversal of tree
+def level_order_traversal(root):
+    ans = []
+    queue = deque()
+    queue.append((root, 0))
+    while queue:
+        prev, depth = queue.popleft()
+        if prev is None:
+            continue
+        if len(ans) <= depth:
+            ans.append([])
+        ans[depth].append(prev.val)
+        queue.append((prev.left, depth+1))
+        queue.append((prev.right, depth+1))
+    return ans
