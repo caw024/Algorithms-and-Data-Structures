@@ -38,8 +38,6 @@ def generate_sparse_table(arr):
 
 # O(1) access, min(arr[l,r]) including at r
 def min_query(l, r):
-    global sparse_table
-
     # get largest power of 2 no greater than r - l + 1
     k = 1
     while (k << 1) <= r - l + 1:
