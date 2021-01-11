@@ -80,6 +80,7 @@ class DSU:
         self.size = [1] * N
 
     def find(self, x):
+        # path compression
         if x != self.parents[x]: 
             self.parents[x] = self.find(self.parents[x])
         return self.parents[x]
