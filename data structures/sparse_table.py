@@ -8,8 +8,6 @@ sparse_table = defaultdict(int)
 # get static min queries where r-l+1 is a power of 2, notice [l,r]
 # O(nlogn) preprocessing to get min queries
 def generate_sparse_table(arr):
-    global sparse_table
-
     pow2 = 1
     # for each power of 2 (logn)
     while pow2 <= len(arr):
