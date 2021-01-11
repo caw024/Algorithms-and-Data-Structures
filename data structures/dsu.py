@@ -79,8 +79,8 @@ class DSU:
         self.parents = list(range(N))
         self.size = [1] * N
 
+    # returns path-compressed parent of node x
     def find(self, x):
-        # path compression
         if x != self.parents[x]: 
             self.parents[x] = self.find(self.parents[x])
         return self.parents[x]
