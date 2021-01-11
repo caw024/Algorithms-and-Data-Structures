@@ -48,6 +48,15 @@ class DSU:
         roots = set(self.find(x) for x in range(len(self.parents)))
         return len(roots)
 
+    # get all connected components as a hash table, mapping root to set of nodes connected to root
+    def getComponents(self):
+        from collections import defaultdict
+
+        d = defaultdict(set)
+        for i in range(len(self.parents)):
+            d[self.find(i)].add(i)
+        return d
+
 
 # APPLICATIONS
 '''
@@ -64,6 +73,7 @@ if __name__ == "__main__":
 
     # {0} <- {1,2,3} and {4,5}
     print(f"Not-totally-updated size of connected components: {dsu.size}")
+    print(f"Connected Components given root: {dsu.getComponents()}")
     for i in range(N):
         print(f"Parent node of {i} is {dsu.find(i)}",
               f"\tSize of {i}th node is {dsu.getSize(i)}")
