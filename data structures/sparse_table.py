@@ -39,7 +39,7 @@ def min_query(l, r):
     # get largest power of 2 no greater than r - l + 1
     k = 1
     while (k << 1) <= r - l + 1:
-        k <<= 1
+        k = k << 1
 
     return min(sparse_table[(l, l + k - 1)],
                sparse_table[(r - (k - 1), r)]
