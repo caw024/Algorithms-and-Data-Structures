@@ -61,3 +61,33 @@ if __name__ == "__main__":
     for l in range(len(arr2)):
         for r in range(l, len(arr2)):
             print(l, r, min_query(l, r))
+
+# Contest Implementation
+'''
+from collections import defaultdict
+
+sparse_table = defaultdict(int)
+
+def generate_sparse_table(arr):
+    pow2 = 1
+    while pow2 <= len(arr):
+        r = pow2 - 1
+        while r < len(arr):
+            l = r - (pow2 - 1)
+            if l == r:
+                sparse_table[(l, r)] = arr[l]
+                r += 1
+                continue
+            w = (r - l + 1)//2
+            sparse_table[(l, r)] = min(sparse_table[(l, l + w - 1)],
+                                       sparse_table[(l + w, r)])
+            r += 1
+        pow2 = pow2 << 1
+
+def min_query(l, r):
+    k = 1
+    while (k << 1) <= r - l + 1:
+        k = k << 1
+    return min(sparse_table[(l, l + k - 1)],
+               sparse_table[(r - (k - 1), r)])
+'''

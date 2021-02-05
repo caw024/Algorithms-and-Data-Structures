@@ -1,5 +1,5 @@
 class Fenwick:
-    # O(n), constructs fenwick tree
+    # O(n), constructs fenwick tree from given array
     def __init__(self, arr):
         self.arr = arr
         self.tree = [0] * (len(self.arr) + 1)
@@ -62,3 +62,38 @@ if __name__ == "__main__":
     print(ft.rangeQuery(4,9), arr[4:10])
     print(ft.rangeQuery(0,len(arr)-1), arr)
     '''
+
+# Contest Implementation
+'''
+class Fenwick:
+    def __init__(self, arr):
+        self.arr = arr
+        self.tree = [0] * (len(self.arr) + 1)
+        for i in range(1, len(self.tree)):
+            self.tree[i] = arr[i-1]
+        for i in range(1, len(self.tree)):
+            parent_idx = i + self.LSB(i)
+            if parent_idx >= len(self.tree):
+                continue
+            self.tree[parent_idx] += self.tree[i]
+
+    def LSB(self, i):
+        return i & (-i)
+
+    def prefixSum(self, i):
+        prefix_sum, i = 0, i+1
+        while i > 0:
+            prefix_sum, i = prefix_sum + self.tree[i], i - self.LSB(i)
+        return prefix_sum
+
+    def rangeQuery(self, l, r):
+        return self.prefixSum(r) - self.prefixSum(l-1)
+
+    def updatePoint(self, idx, new_val):
+        dval = new_val - self.arr[idx]
+        self.arr[idx] = new_val
+        idx = idx+1
+        while idx < len(self.tree):
+            self.tree[idx] += dval
+            idx += self.LSB(idx)
+'''

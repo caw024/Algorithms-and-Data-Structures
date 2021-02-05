@@ -81,29 +81,28 @@ if __name__ == "__main__":
         # print(f"Size of {i}th node is {dsu.getSize(i)}")
 
 
-'''
-Contest Implementation:
 
+# Contest Implementation:
+'''
 class DSU:
     def __init__(self, N):
-        self.parents = list(range(N))
-        self.size = [1] * N
+        self.p = list(range(N))
+        self.sz = [1] * N
 
-    # returns path-compressed parent of node x
     def find(self, x):
-        if x != self.parents[x]: 
-            self.parents[x] = self.find(self.parents[x])
-        return self.parents[x]
+        if x != self.p[x]: self.p[x] = self.find(self.p[x])
+        return self.p[x]
 
     def union(self, x, y):
         xr, yr = self.find(x), self.find(y)
-        if xr == yr:
-            return False
-        if self.size[xr] > self.size[yr]:
-            xr, yr = yr, xr
-            
-        # size of xr <= size of yr, so smaller points to the larger
-        self.parents[xr] = yr
-        self.size[yr] += self.size[xr]
+        if xr == yr: return False
+        if self.sz[xr] > self.sz[yr]: xr, yr = yr, xr
+        self.p[xr], self.sz[yr] = yr, self.sz[yr]+self.sz[xr]
         return True
+
+    def isConnected(self,x,y):
+        return self.find(x) == self.find(y)
+
+    def getSize(self, x):
+        return self.sz[self.find(x)]
 '''

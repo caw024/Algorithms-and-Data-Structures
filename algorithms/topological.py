@@ -55,6 +55,7 @@ if __name__ == "__main__":
     d[3] = [4]
     d[4] = []
     print(topological(d))
+    # expected 
 
     e = defaultdict(list)
     e[0] = [1,2]
