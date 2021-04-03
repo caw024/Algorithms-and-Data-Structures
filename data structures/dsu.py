@@ -97,12 +97,13 @@ class DSU:
         xr, yr = self.find(x), self.find(y)
         if xr == yr: return False
         if self.sz[xr] > self.sz[yr]: xr, yr = yr, xr
-        self.p[xr], self.sz[yr] = yr, self.sz[yr]+self.sz[xr]
+        self.p[xr], self.sz[yr] = yr, self.sz[yr] + self.sz[xr]
         return True
-
+        
     def isConnected(self,x,y):
         return self.find(x) == self.find(y)
-
     def getSize(self, x):
         return self.sz[self.find(x)]
+    def numRoots(self):
+        return len(set(self.find(x) for x in range(len(self.p))))
 '''

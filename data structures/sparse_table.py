@@ -1,7 +1,9 @@
 from collections import defaultdict
 
 # sparse table
-# can do max and range gcd queries
+# can do range queries i.e. min, max, lcm, gcd 
+#   -(not sum, which is not a range query)
+# array must be static
 sparse_table = defaultdict(int)
 
 
