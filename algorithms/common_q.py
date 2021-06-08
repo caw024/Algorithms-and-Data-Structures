@@ -21,6 +21,8 @@ def reverse_linked_list(head):
         cur.next = None
     return tail
 
+def lmao():
+    pass
 
 # invert a btree
 def invert_btree(root):
