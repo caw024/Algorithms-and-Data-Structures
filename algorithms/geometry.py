@@ -1,7 +1,7 @@
 from math import sqrt
 
 # points are 2D coordinates (x,y)
-# lines are of the form (a,b,c) or ax + by + c = 0
+# any line can be uniquely represented as a tuple (a,b,c) or ax + by + c = 0 up to scalar multiplication
 # should test these methods more
 
 def dist(A, B):
