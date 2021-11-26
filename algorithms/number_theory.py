@@ -22,7 +22,7 @@ def divisors(n: int) -> list:
 
 
 # O(sqrt(n)): factors a number to primes, returns a dict
-def factor(n: int) -> dict:
+def factorize(n: int) -> dict:
     d = defaultdict(int)
     while n % 2 == 0:
         d[2] += 1
@@ -88,13 +88,36 @@ def gen_primes(n: int) -> list:
     return [i for i in range(n) if spf[i] == i]
 
 
-def numFactors(n: int) -> int:
+def num_factors(n: int) -> int:
     # get factorization: can be O(sqrt(n)) OR O(logn) based on which factors
-    d = factor(n)
+    d = factorize(n)
     ans = 1
     for val in d.items():
         ans *= (val + 1)
     return ans
+
+
+def factorials(MAXN, mod):
+    ''' Precomputes list of MAXN factorials and 
+    inverse factorials of certain mod (O(MAXN))'''
+    # MAXN = 3 * 10**5
+    # mod = 998244353
+
+    # pow(x, e, m) uses binary exponentiation
+    # have to precompute factorial and inverse factorial because it can be VERY large and slow
+
+    # fac has array [0, ..., MAXN]
+    # invf[i] = (fac[i] ^ (mod-2)) % mod = (i+1) * invf[i+1] % mod
+
+    fac = [1]
+    for i in range(1, MAXN + 1):
+        fac.append((fac[-1] * i) % mod)
+
+    invf = [pow(fac[-1], mod-2, mod)]
+    for i in range(MAXN, 0, -1):
+        invf.append( (i * invf[-1]) % mod )
+    invf = invf[::-1]
+    return fac, invf
     
 
 if __name__ == "__main__":
