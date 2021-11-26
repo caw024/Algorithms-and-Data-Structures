@@ -16,23 +16,17 @@ edge_list = []
 visited = set()
 
 # O(V+E)
-def dfs(node):
-    global visited
-
+def dfs(node, visited):
     if node in visited:
         return
     visited.add(node)
     for neighbor in graph[node]:
-        dfs(neighbor)
+        dfs(neighbor, visited)
     
 # O(V+E)
 def bfs(node):
-    visited = set()
-    visited.add(node)
-
-    q = deque()
-    q.append(node)
-
+    visited = {node}
+    q = deque([node])
     while q:
         cur = q.popleft()
         for neighbor in graph[cur]:
