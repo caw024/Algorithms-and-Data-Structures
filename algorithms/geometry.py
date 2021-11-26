@@ -6,14 +6,14 @@ class Point:
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.coor = [x,y]
+        self.coor = (x,y)
 
     def __repr__(self):
         x, y = map(partial(round, ndigits=5), self.coor)
         return f"(x,y): ({x},{y})\t"
 
 class Line:
-    def __init__(self, p1: Point = None, p2: Point = None, eqn: list = None):
+    def __init__(self, p1: Point = None, p2: Point = None, eqn: tuple = None):
         """Equation of a 2D line is of the form:
         Ax + By + C = 0
         """
@@ -28,17 +28,18 @@ class Line:
         a, b, c = map(partial(round, ndigits=5), self.eqn)
         return f"Eqn: {a}x + {b}y + {c}\t"
 
-    # returns line of the form ax + by + c = 0 as [a,b,c]
-    # when c == 0, line is vertical. else c == 1 is nonvertical
-    def get_line(self, A, B) -> list:
+    def get_line(self, A, B) -> tuple:
+        """ returns line of the form ax + by + c = 0 as (a,b,c)
+        when c == 0, line is vertical. else c == 1 is nonvertical
+        """
         Ax, Ay = A.coor
         Bx, By = B.coor
         # vertical line
         if Ax == Bx:
-            return [-1, 0, Ax]
+            return (-1, 0, Ax)
         M = (By - Ay)/(Bx - Ax)
         b = Ay - M * Ax
-        return [M, -1, b]
+        return (M, -1, b)
 
 
 def dist(A, B) -> float:
@@ -60,7 +61,6 @@ def is_parallel(l1, l2) -> bool:
 
 # assumes lines aren't parallel; returns a point
 def line_intersect(l1, l2) -> Point:
-    # originally: (a,b,c): ax + by + c = 0
     a1, b1, c1 = l1.eqn
     a2, b2, c2 = l2.eqn
 
@@ -81,7 +81,7 @@ def perp_bis(A, B) -> Line:
         return Line(Point(0, ymid), Point(1, ymid))
     M2 = -1/M
     b2 = ymid - xmid * M2
-    return Line(eqn=[M2, -1, b2])
+    return Line(eqn=(M2, -1, b2))
 
 
 def reflect(point, line) -> Point:
@@ -98,7 +98,7 @@ def projection(point, line) -> Point:
         return Point(b, y1)
     M2 = -1/M
     b2 = y1 - M2 * x1
-    return line_intersect(line, Line(eqn=[M2, -1, b2]) )
+    return line_intersect(line, Line(eqn=(M2, -1, b2)) )
 
 
 def heron(A, B, C) -> float:
