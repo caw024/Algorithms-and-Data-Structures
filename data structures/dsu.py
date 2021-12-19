@@ -90,8 +90,14 @@ class DSU:
         self.sz = [1] * N
 
     def find(self, x):
-        if x != self.p[x]: self.p[x] = self.find(self.p[x])
-        return self.p[x]
+        root = x
+        while self.parents[root] != root:
+            root = self.parents[root]
+        while (x != root):
+            nextx = self.parents[x]
+            self.parents[x] = root
+            x = nextx
+        return root
 
     def union(self, x, y):
         xr, yr = self.find(x), self.find(y)
