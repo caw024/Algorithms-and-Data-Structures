@@ -6,14 +6,13 @@ ll MOD = 1e9 + 7;
 ll INF = 1e12;
 
 
-void redirect_io(){
-    ifstream in("input.txt");
-    streambuf *cinbuf = cin.rdbuf(); //save old buf
-    cin.rdbuf(in.rdbuf()); //redirect cin to input.txt!
+void initial_setup(){
+    freopen("input.txt", "r", stdin);
+    // freopen("output.txt", "w", stdout);
 
-    // ofstream out("output.txt");
-    // streambuf *coutbuf = cout.rdbuf(); //save old buf
-    // cout.rdbuf(out.rdbuf()); //redirect cout to output.txt!
+    // desync cin/scanf
+    // removes auto-flush from calling cin then cout
+    ios::sync_with_stdio(0); cin.tie(0);
 }
 
 void solve() {
@@ -21,9 +20,7 @@ void solve() {
 }
 
 int main() {
-    redirect_io();
-
-    ios_base::sync_with_stdio(false), cin.tie(NULL);
+    initial_setup();
 
     int n, s, d;
     cin >> n >> s >> d;
