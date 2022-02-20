@@ -1,4 +1,4 @@
-from math import sqrt
+from math import sqrt, cos, sin, tan
 from functools import partial
 
 class Point:
@@ -12,13 +12,39 @@ class Point:
         x, y = map(partial(round, ndigits=5), self.coor)
         return f"(x,y): ({x},{y})\t"
 
+    def __eq__(self, other):
+        return (abs(self.x - other.x) < 1e-8 and abs(self.y - other.y) < 1e-8)
+
+    def __add__(self, other):
+        return Point(self.x + other.x, self.y + other.y)
+        
+    def __sub__(self, other):
+        return Point(self.x - other.x, self.y - other.y)
+
+    def __mul__(self, scalar):
+        return Point(scalar * self.x, scalar * self.y)
+
+    def rotate_ccw_origin(self, angle):
+        x2 = cos(angle) * self.x - sin(angle) * self.y
+        y2 = sin(angle) * self.x + cos(angle) * self.y
+        return Point(x2, y2)
+
+    def rotate_ccw_90(self):
+        return Point(-self.y, self.x)
+
+    @staticmethod
+    def dist(A, B):
+        return sqrt((A.x - B.x)**2 + (A.y - B.y)**2)
+    
+
+
 class Line:
     def __init__(self, p1: Point = None, p2: Point = None, eqn: tuple = None):
         """Equation of a 2D line is of the form:
         Ax + By + C = 0
         """
         if p1 and p2:
-            self.eqn = self.get_line(p1, p2)
+            self.eqn = self._get_line(p1, p2)
         elif eqn:
             self.eqn = eqn
         else:
@@ -28,7 +54,7 @@ class Line:
         a, b, c = map(partial(round, ndigits=5), self.eqn)
         return f"Eqn: {a}x + {b}y + {c}\t"
 
-    def get_line(self, A, B) -> tuple:
+    def _get_line(self, A, B) -> tuple:
         """ returns line of the form ax + by + c = 0 as (a,b,c)
         when c == 0, line is vertical. else c == 1 is nonvertical
         """
@@ -41,12 +67,30 @@ class Line:
         b = Ay - M * Ax
         return (M, -1, b)
 
+    def eval_x(self, x) -> float:
+        # solve for y given x
+        a, b, c = self.eqn
+        if b == 0:
+            return None
+        return (a * x + c) / -b
 
-def dist(A, B) -> float:
-    return sqrt( (A.x - B.x)**2 + (A.y - B.y)**2 )
+    def eval_y(self, y) -> float:
+        # solve for x given y
+        a, b, c = self.eqn
+        if a == 0:
+            return None
+        return (b * y + c) / -a
 
-def coor_sum(A, B) -> Point:
-    return Point(A.x + B.x, A.y + B.y)
+
+class Triangle:
+    def __init__(self, A, B, C):
+        self.A = A
+        self.B = B
+        self.C = C
+        self.AB = Line(A,B)
+        self.BC = Line(B,C)
+        self.AC = Line(A,C)
+
 
 # checks if line is parallel -> call this before line_intersect
 def is_parallel(l1, l2) -> bool:
@@ -70,7 +114,7 @@ def line_intersect(l1, l2) -> Point:
 
 
 def perp_bis(A, B) -> Line:
-    xmid, ymid = map(lambda x: x/2, coor_sum(A, B))
+    xmid, ymid = map(lambda x: x/2, A + B)
     line = Line(A,B)
     M, c, _ = line.eqn
     # current line is horizontal, perp bis has constant x
@@ -86,7 +130,7 @@ def perp_bis(A, B) -> Line:
 
 def reflect(point, line) -> Point:
     proj = projection(point, line)
-    return Point(2 * proj.x - point.x, 2 * proj.y - point.y)
+    return 2 * proj - point
 
 
 def projection(point, line) -> Point:
@@ -102,7 +146,7 @@ def projection(point, line) -> Point:
 
 
 def heron(A, B, C) -> float:
-    a, b, c = dist(B,C), dist(A, C), dist(A, B)
+    a, b, c = Point.dist(B,C), Point.dist(A, C), Point.dist(A, B)
     s = (a+b+c)/2
     return sqrt(s * (s-a) * (s-b) * (s-c))
 
@@ -117,6 +161,19 @@ def distance_from_point_to_line(point, line) -> float:
         return 0
     return abs(a*x + b*y + c)/sqrt(a**2 + b**2)
     
+
+def rotated_line_around_point(rotated_center, line, angle) -> Line:
+    # ccw rotation of line at some angle (up to 90 degrees) wrt rotated_center (on line)
+    # get another point on the line
+    p0 = Point(0, line.eval_x(0)) if line.eval_x(0) is not None else Point(line.eval_y(0), 0)
+    p1 = Point(1, line.eval_x(1)) if line.eval_x(1) is not None else Point(line.eval_y(1), 1)
+    perp_foot = p0 if rotated_center != p0 else p1
+
+    triangle_base = perp_foot - rotated_center
+    triangle_height = triangle_base.rotate_ccw_90() * tan(angle)
+    triangle_pt = perp_foot + triangle_height
+    return Line(rotated_center, triangle_pt) 
+
 
 if __name__ == "__main__":
     # methods have been tested on Three Triangle problem of 2020 ICPC GRNY

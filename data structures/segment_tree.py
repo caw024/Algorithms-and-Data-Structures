@@ -10,6 +10,9 @@ class SegmentTree:
         for i in range(n-1, 0, -1):
             self.tree[i] = self.tree[2 * i] + self.tree[2 * i + 1]
 
+    def __repr__(self):
+        return ' '.join(list(map(str, self.tree)))
+
     # O(logn), computes sum of range query in arr[l:r+1]
     def rangeQuery(self, l, r):
         ans = 0
@@ -46,6 +49,7 @@ class SegmentTree:
 
 
 # Implementation 2: Recursion
+# not as optimized for python
 if __name__ == "__main__":
     from testcases import generate_test_cases
     from random import randint

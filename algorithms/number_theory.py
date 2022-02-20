@@ -119,6 +119,9 @@ def factorials(MAXN, mod):
     invf = invf[::-1]
     return fac, invf
     
+fac, invf = factorials(MAXN=1e5, mod=1e9+7)
+def c(n, k, mod):
+    return (fac[n] * invf[n-k] * invf[k]) % mod
 
 if __name__ == "__main__":
     print(spf)

@@ -123,3 +123,80 @@ def find_tree_diameter(d):
     final_path = []
     _path_between_vertices(node_b, node_c, [])
     return final_path
+
+
+### EFFICIENT TREE QUERIES
+
+
+''' Find kth ancestor of a node in logarithmic time per query 
+nlogn preprocessing to generate ancestor(x,2^i)'''
+def ancestors(nodes: list) -> dict:
+    # nodes should be list of nodes with distinct values (or ids) and access to parent node
+    ancestors = {}
+    for node in nodes:
+        ancestors[(node.val, 1)] = node.parent.val
+
+    i = 1
+    while True:
+        if (i << 1) >= len(nodes):
+            break
+        prev_node_id = ancestors[(node.val, i)]
+        ancestors[(node.val, i << 1)] = ancestors[(prev_node_id, i)]
+        i <<= 1
+    return ancestors
+
+def assign_graph_ids_via_dfs(node: int, lru_id: int, visited: set, 
+                                    node_ids: dict, neighbors: dict) -> int:
+    if node in visited:
+        return lru_id
+    visited.add(node)
+    lru_id += 1
+    node_ids[node] = lru_id
+    for nbr in neighbors[node]:
+        lru_id = assign_graph_ids_via_dfs(nbr, lru_id+1, visited)
+    return lru_id
+
+def compute_subtree_sizes(node: int, subtree_sizes: dict, neighbors: dict) -> int:
+    cur_subtree_size = 1
+    for nbr in neighbors[node]:
+        cur_subtree_size += compute_subtree_sizes(nbr, subtree_sizes, neighbors)
+    subtree_sizes[node] = cur_subtree_size
+    return cur_subtree_size
+
+''' Calculating dynamic subtree queries in O(logn)'''
+# BUILD A TREE TRAVERSAL ARRAY
+# store values of nodes in segment tree, can update value and calculate sum in O(logn)
+
+''' Calculating dynamic path queries in O(logn) '''
+# similar to before, but need to change values of list in a range, logn using segment tree
+
+''' Lowest common ancestor of node query in O(logn) '''
+'''
+Approach 1: 
+Compute level of each node in O(n) using DFS
+Move lower pointer node to the same level as the other node (using ancestors)
+Binary search for the 1st time both pointers share an ancestor
+- this step is actually O(logn) because each ancestor(x,2**n) is computed in O(1)
+- i.e. find largest n s.t. ancestor(A,2**n) != ancestor(B,2**n) then work up
+O(logn) per query
+'''
+
+'''
+Approach 2:
+Use a different tree traversal array generated from DFS
+- add node whenever it appears in dfs tree (forward and backwards)
+find min depth between nodes a and b in array, this is a range min query
+Pre-process O(nlogn) using range min query
+O(1) per query
+'''
+
+'''
+Approach 3: use offline algo by combining using union find?
+'''
+
+
+'''
+Get distance of 2 nodes in a tree in O(logn) time
+
+dist(a,b) = depth(a) + depth(b) - 2 * depth(lca(a,b))
+'''
