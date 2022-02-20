@@ -1,26 +1,19 @@
 #include <bits/stdc++.h>
+
+#define debug(x) cout << #x << "=" << x << '\n'
 using namespace std;
 
 typedef long long ll;
 ll MOD = 1e9 + 7;
 ll INF = 1e12;
 
-
-void initial_setup(){
-    freopen("input.txt", "r", stdin);
-    // freopen("output.txt", "w", stdout);
-
-    // desync cin/scanf
-    // removes auto-flush from calling cin then cout
-    ios::sync_with_stdio(0); cin.tie(0);
-}
-
 void solve() {
 
 }
 
 int main() {
-    initial_setup();
+    freopen("/Users/caw/Documents/.../input.txt", "r", stdin);
+    ios::sync_with_stdio(0); cin.tie(0);
 
     int n, s, d;
     cin >> n >> s >> d;
