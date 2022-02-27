@@ -96,6 +96,25 @@ def num_factors(n: int) -> int:
         ans *= (val + 1)
     return ans
 
+# O(sqrtn)
+def phi(n):
+    result = n
+    i = 2
+    while (i * i <= n):
+        if (n % i == 0):
+            while (n % i == 0):
+                n //= i
+            result -= result // i
+        i += 1
+    
+    if (n > 1):
+        result -= result // n
+    return result
+
+def inv(n, mod):
+    return pow(n, mod-2, mod)
+
+
 
 def factorials(MAXN, mod):
     ''' Precomputes list of MAXN factorials and 
