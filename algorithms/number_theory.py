@@ -78,6 +78,13 @@ def factor2(n: int) -> dict:
         n = n//spf[n]
     return d
 
+def num_factors(n):
+    d = factor2(n)
+    ans = 1
+    for i in d.values():
+        ans *= (i+1)
+    return ans
+
 # O(1) w sieves
 def is_prime2(n: int) -> bool:
     return spf[n] == n

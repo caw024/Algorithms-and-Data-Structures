@@ -1,4 +1,4 @@
-from math import sqrt, cos, sin, tan
+from math import sqrt, cos, sin, tan, acos, pi
 from functools import partial
 
 class Point:
@@ -24,6 +24,7 @@ class Point:
     def __mul__(self, scalar):
         return Point(scalar * self.x, scalar * self.y)
 
+    # for clockwise rotation, use negative angles
     def rotate_ccw_origin(self, angle):
         x2 = cos(angle) * self.x - sin(angle) * self.y
         y2 = sin(angle) * self.x + cos(angle) * self.y
@@ -31,6 +32,13 @@ class Point:
 
     def rotate_ccw_90(self):
         return Point(-self.y, self.x)
+
+    def rotate_ccw_point(self, angle, center_rotation):
+        translated = (self - center_rotation)
+        # print("translated", translated)
+        rotated_pt = translated.rotate_ccw_origin(angle) + center_rotation
+        # print("rotated pt", rotated_pt)
+        return rotated_pt
 
     @staticmethod
     def dist(A, B):
@@ -82,6 +90,13 @@ class Line:
         return (b * y + c) / -a
 
 
+def get_angle(a: Point, b: Point, c: Point) -> float:
+    # get angle ABC in radians
+    ab, bc, ac = Point.dist(a,b), Point.dist(b,c), Point.dist(a,c)
+    return acos(((bc*bc + ab*ab)-ac*ac)/(2*bc*ab))
+
+
+
 class Triangle:
     def __init__(self, A, B, C):
         self.A = A
@@ -90,6 +105,21 @@ class Triangle:
         self.AB = Line(A,B)
         self.BC = Line(B,C)
         self.AC = Line(A,C)
+        # ab, bc, ac
+        self.distances = [Point.dist(A,B), Point.dist(B,C), Point.dist(A,C)]
+        # ABC, CAB, BCA (not directed - at most 180)
+        self.angles = [get_angle(A,B,C), get_angle(C,A,B), get_angle(B,C,A)]
+
+    def __repr__(self):
+        A, B, C = self.A, self.B, self.C
+        distances = self.distances
+        angles = list(map(lambda x: x * 180 / pi, self.angles))
+        s = []
+        s.append(f"Points {A=} {B=} {C=}")
+        s.append(f"{distances=}")
+        s.append(f"In degrees: {angles=}")
+        return '\n'.join(s)
+
 
 
 # checks if line is parallel -> call this before line_intersect
@@ -114,7 +144,8 @@ def line_intersect(l1, l2) -> Point:
 
 
 def perp_bis(A, B) -> Line:
-    xmid, ymid = map(lambda x: x/2, A + B)
+    xmid = (A+B).x/2
+    ymid = (A+B).y/2
     line = Line(A,B)
     M, c, _ = line.eqn
     # current line is horizontal, perp bis has constant x

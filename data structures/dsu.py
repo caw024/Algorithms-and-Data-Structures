@@ -1,9 +1,14 @@
+from collections import defaultdict
+
 class DSU:
     def __init__(self, N):
         # stores parent node of given vertex
         self.parents = list(range(N))
         # gives size of component w given node. Note: only accurate for root node
         self.size = [1] * N
+        self.num_components = N
+        # stores order of adding points
+        self.stack = []
 
     # runtime: amoritized O(1)
     # returns root node
@@ -23,6 +28,7 @@ class DSU:
     # runtime: amortized O(1) by combining union by size and path compression
     # unifies two components together (the ones containing x and y)
     def union(self, x, y):
+        self.stack.append((x, y))
         xr, yr = self.find(x), self.find(y)
         # if they're in same group, do nothing
         if xr == yr:
@@ -30,6 +36,9 @@ class DSU:
 
         if self.size[xr] > self.size[yr]:
             xr, yr = yr, xr
+        
+        self.num_components -= 1
+
         # size of xr <= size of yr, so smaller points to the larger
         self.parents[xr] = yr
         self.size[yr] += self.size[xr]
@@ -43,19 +52,23 @@ class DSU:
     def getSize(self, x):
         return self.size[self.find(x)]
 
-    # get number of distinct roots
-    def numRoots(self):
-        roots = set(self.find(x) for x in range(len(self.parents)))
-        return len(roots)
-
     # get all connected components as a hash table, mapping root to set of nodes connected to root
     def getComponents(self):
-        from collections import defaultdict
-
         d = defaultdict(set)
         for i in range(len(self.parents)):
             d[self.find(i)].add(i)
         return d
+
+    def undo(self):
+        x, y = self.stack.pop()
+        if (x == y):
+            return
+        self.parents[x] = x
+        self.size[x] -= self.size[y]
+        self.num_components += 1
+
+
+
 
 
 # APPLICATIONS
@@ -110,6 +123,6 @@ class DSU:
         return self.find(x) == self.find(y)
     def getSize(self, x):
         return self.sz[self.find(x)]
-    def numRoots(self):
+    def numComponents(self):
         return len(set(self.find(x) for x in range(len(self.p))))
 '''
