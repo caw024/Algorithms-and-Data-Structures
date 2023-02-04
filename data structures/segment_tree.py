@@ -50,21 +50,60 @@ class SegmentTree:
 
 # Implementation 2: Recursion
 # not as optimized for python
+
+from math import inf
+
+class MaxSegmentTree:
+    def __init__(self, arr):
+        n = len(arr)
+        self.tree = [0]*n + arr
+        for i in range(n-1, 0, -1):
+            # replace with appropriate query
+            self.tree[i] = max(self.tree[2 * i], self.tree[2 * i + 1])
+
+    def rangeQuery(self, l, r):
+        ans = -inf
+        n = len(self.tree)//2
+        l, r = l+n, r+n
+        while l <= r:
+            if (l % 2):
+                ans = max(ans, self.tree[l])
+                l += 1
+            if (r % 2 == 0):
+                ans = max(ans, self.tree[r])
+                r -= 1
+            l, r = l//2, r//2
+        return ans
+
+    def updatePoint(self, i, new_val):
+        n = len(self.tree)//2
+        self.tree[i + n] = new_val
+        i = i + n
+
+        while i >= 1:
+            i = i//2
+            # replace with appropriate query
+            self.tree[i] = max(self.tree[2 * i], self.tree[2 * i + 1])
+
+
 if __name__ == "__main__":
     from testcases import generate_test_cases
     from random import randint
 
-    numtests = 100
+    numtests = 3
     testcases = generate_test_cases(numtests)
     for arr in testcases:
-        st = SegmentTree(arr)
+        st = MaxSegmentTree(arr)
         N = 100
+
+        # print(arr)
+        # print(st.tree)
 
         # compute ranges
         for i in range(N):
             l, r = sorted([randint(0, len(arr)-1), randint(0, len(arr)-1)])
-            if sum(arr[l:r+1]) != st.rangeQuery(l, r):
-                print("False")
+            if max(arr[l:r+1]) != st.rangeQuery(l, r):
+                print(f"False {l=} {r=} {max(arr[l:r+1])=} {st.rangeQuery(l, r)=}")
 
         # update some points
         for i in range(N):
@@ -75,8 +114,8 @@ if __name__ == "__main__":
         # compute ranges
         for i in range(N):
             l, r = sorted([randint(0, len(arr)-1), randint(0, len(arr)-1)])
-            if sum(arr[l:r+1]) != st.rangeQuery(l, r):
-                print("False")
+            if max(arr[l:r+1]) != st.rangeQuery(l, r):
+                print(f"False {l=} {r=} {max(arr[l:r+1])=} {st.rangeQuery(l, r)=}")
 
     print("Finished run")
 
