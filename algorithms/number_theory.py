@@ -41,6 +41,8 @@ def factorize(n: int) -> dict:
 # O(sqrt(n))
 def is_prime(n: int) -> bool:
     # if n is factorable, it has a prime less than or equal to sqrt(n)
+    if n == 1:
+        return False
     if n == 2:
         return True
     if n % 2 == 0:
